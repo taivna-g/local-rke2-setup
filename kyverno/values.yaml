@@ -1,0 +1,8 @@
+webhooks:
+  # Allow Kyverno webhooks to evaluate all namespaces, including kube-system.
+  # If you prefer a positive include, you can use a matchExpressions NotIn = [] (empty)
+  namespaceSelector:
+    matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: NotIn
+        values: []  # no exclusions

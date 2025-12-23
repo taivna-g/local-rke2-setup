@@ -1,0 +1,21 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: force-failed-pod-replacement-for-suc-jobs
+spec:
+  rules:
+  - name: set-pod-replacement-policy-to-failed
+    match:
+      any:
+      - resources:
+          kinds: ["Job"]
+          namespaces: ["system-upgrade"]
+          selector:
+            matchExpressions:
+            - key: upgrade.cattle.io/plan   # SUC adds this label (e.g., agent-plan/server-plan)
+              operator: In
+              values: ["server-plan", "agent-plan"]
+    mutate:
+      patchStrategicMerge:
+        spec:
+          podReplacementPolicy: Failed
